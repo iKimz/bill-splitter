@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Language, ThemeMode } from '../types';
 import { getTranslation } from '../utils/i18n';
 import { Utensils, RotateCcw, Image as ImageIcon, Sun, Moon, Users } from 'lucide-react';
@@ -31,8 +32,14 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
         {/* Logo & Title */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <Utensils className="w-5.5 h-5.5" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-blue-500/20 shrink-0">
+            <Image
+              src="/app-logo.png"
+              alt="Bill Splitter Logo"
+              width={40}
+              height={40}
+              className="object-cover"
+            />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
