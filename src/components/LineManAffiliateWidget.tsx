@@ -104,7 +104,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
                   <>
                     <Smartphone className="w-3 h-3 text-slate-400 shrink-0" />
                     <span className="text-slate-400 text-[10px]">
-                      {isEn ? 'Available on mobile devices' : 'รองรับการกดเปิดบนมือถือ 📱'}
+                      {isEn ? 'Please open on mobile' : 'กรุณาเปิดบนมือถือ'}
                     </span>
                   </>
                 )}
@@ -142,8 +142,8 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
                   ? 'Order LINE MAN Food'
                   : 'สั่ง LINE MAN มื้อถัดไป 🛵'
                 : isEn
-                ? 'Available on mobile devices'
-                : 'รองรับการกดเปิดบนมือถือ 📱'
+                ? 'Please open on mobile'
+                : 'กรุณาเปิดบนมือถือ'
             }
           >
             <Image
