@@ -1,0 +1,315 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { BillItem, BillSettings, Friend, Language, ThemeMode } from '../types';
+import { calculateBill } from '../utils/calculation';
+import { Header } from '../components/Header';
+import { SettingsBar } from '../components/SettingsBar';
+import { FriendsManager } from '../components/FriendsManager';
+import { ItemMatrix } from '../components/ItemMatrix';
+import { ItemCards } from '../components/ItemCards';
+import { ValidationBanner } from '../components/ValidationBanner';
+import { SummarySection } from '../components/SummarySection';
+import { PromptPaySection } from '../components/PromptPaySection';
+import { ExportModal } from '../components/ExportModal';
+import { ConfirmModal } from '../components/ConfirmModal';
+import { LayoutGrid, Layers } from 'lucide-react';
+
+const STORAGE_KEY = 'bill_splitter_data_v2';
+
+const INITIAL_FRIENDS: Friend[] = [
+  { id: 'f1', name: 'เพื่อนคนที่ 1', avatarColor: '#3B82F6' },
+  { id: 'f2', name: 'เพื่อนคนที่ 2', avatarColor: '#EC4899' },
+  { id: 'f3', name: 'เพื่อนคนที่ 3', avatarColor: '#10B981' },
+];
+
+const INITIAL_ITEMS: BillItem[] = [
+  { id: 'i1', name: 'รายการอาหารที่ 1', price: 500, quantity: 1, assignedFriendIds: ['f1', 'f2', 'f3'] },
+  { id: 'i2', name: 'รายการอาหารที่ 2', price: 150, quantity: 1, assignedFriendIds: ['f1', 'f3'] },
+];
+
+const INITIAL_SETTINGS: BillSettings = {
+  serviceChargePercent: 10,
+  vatPercent: 7,
+  discountAmount: 0,
+  tipAmount: 0,
+  promptPayId: '0888888888',
+};
+
+export default function Home() {
+  const [friends, setFriends] = useState<Friend[]>(INITIAL_FRIENDS);
+  const [items, setItems] = useState<BillItem[]>(INITIAL_ITEMS);
+  const [settings, setSettings] = useState<BillSettings>(INITIAL_SETTINGS);
+  const [paidFriendIds, setPaidFriendIds] = useState<string[]>([]);
+  const [language, setLanguage] = useState<Language>('th');
+  const [themeMode, setThemeMode] = useState<ThemeMode>('light');
+  const [viewMode, setViewMode] = useState<'matrix' | 'cards'>('matrix');
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.friends) setFriends(parsed.friends);
+        if (parsed.items) setItems(parsed.items);
+        if (parsed.settings) setSettings(parsed.settings);
+        if (parsed.paidFriendIds) setPaidFriendIds(parsed.paidFriendIds);
+        if (parsed.language) setLanguage(parsed.language);
+        if (parsed.themeMode) setThemeMode(parsed.themeMode);
+        if (parsed.viewMode) setViewMode(parsed.viewMode);
+      }
+    } catch (e) {
+      console.error('Failed to load localStorage:', e);
+    } finally {
+      setIsLoaded(true);
+    }
+  }, []);
+
+  // Save to localStorage & sync dark class
+  useEffect(() => {
+    if (!isLoaded) return;
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ friends, items, settings, paidFriendIds, language, themeMode, viewMode })
+      );
+    } catch (e) {
+      console.error('Failed to save localStorage:', e);
+    }
+
+    // Apply dark class to document element
+    if (themeMode === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [friends, items, settings, paidFriendIds, language, themeMode, viewMode, isLoaded]);
+
+  // Perform Calculation
+  const calculation = calculateBill(friends, items, settings, paidFriendIds);
+
+  // Handlers for Friends
+  const handleAddFriend = (name: string) => {
+    const newFriend: Friend = {
+      id: `f_${Date.now()}`,
+      name,
+      avatarColor: ['#3B82F6', '#EC4899', '#10B981', '#F59E0B', '#8B5CF6', '#06B6D4'][
+        friends.length % 6
+      ],
+    };
+    setFriends([...friends, newFriend]);
+  };
+
+  const handleRemoveFriend = (id: string) => {
+    setFriends(friends.filter((f) => f.id !== id));
+    setPaidFriendIds(paidFriendIds.filter((fid) => fid !== id));
+    setItems(
+      items.map((item) => ({
+        ...item,
+        assignedFriendIds: item.assignedFriendIds.filter((fid) => fid !== id),
+      }))
+    );
+  };
+
+  const handleUpdateFriendName = (id: string, newName: string) => {
+    setFriends(friends.map((f) => (f.id === id ? { ...f, name: newName } : f)));
+  };
+
+  const handleTogglePaid = (friendId: string) => {
+    setPaidFriendIds((prev) =>
+      prev.includes(friendId) ? prev.filter((id) => id !== friendId) : [...prev, friendId]
+    );
+  };
+
+  // Handlers for Items
+  const handleAddItem = () => {
+    const defaultName = language === 'en' ? `Item ${items.length + 1}` : `รายการอาหารที่ ${items.length + 1}`;
+    const newItem: BillItem = {
+      id: `i_${Date.now()}`,
+      name: defaultName,
+      price: 0,
+      quantity: 1,
+      assignedFriendIds: friends.map((f) => f.id),
+    };
+    setItems([...items, newItem]);
+  };
+
+  const handleRemoveItem = (id: string) => {
+    setItems(items.filter((item) => item.id !== id));
+  };
+
+  const handleUpdateItem = (id: string, updates: Partial<BillItem>) => {
+    setItems(items.map((item) => (item.id === id ? { ...item, ...updates } : item)));
+  };
+
+  const handleToggleFriendItem = (itemId: string, friendId: string) => {
+    setItems(
+      items.map((item) => {
+        if (item.id !== itemId) return item;
+        const exists = item.assignedFriendIds.includes(friendId);
+        const newAssigned = exists
+          ? item.assignedFriendIds.filter((fid) => fid !== friendId)
+          : [...item.assignedFriendIds, friendId];
+        return { ...item, assignedFriendIds: newAssigned };
+      })
+    );
+  };
+
+  const handleToggleAllFriendsForItem = (itemId: string) => {
+    setItems(
+      items.map((item) => {
+        if (item.id !== itemId) return item;
+        const allAssigned = item.assignedFriendIds.length === friends.length;
+        return {
+          ...item,
+          assignedFriendIds: allAssigned ? [] : friends.map((f) => f.id),
+        };
+      })
+    );
+  };
+
+  // Equal Split All Shortcut
+  const handleEqualSplitAll = () => {
+    const allFriendIds = friends.map((f) => f.id);
+    setItems(items.map((item) => ({ ...item, assignedFriendIds: allFriendIds })));
+  };
+
+  // Reset Data Handler
+  const handleConfirmReset = () => {
+    setFriends(INITIAL_FRIENDS);
+    setItems(INITIAL_ITEMS);
+    setSettings(INITIAL_SETTINGS);
+    setPaidFriendIds([]);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans pb-16 transition-colors duration-200 selection:bg-blue-500 selection:text-white">
+      {/* Header */}
+      <Header
+        language={language}
+        theme={themeMode}
+        onLanguageChange={setLanguage}
+        onThemeChange={setThemeMode}
+        onReset={() => setIsResetModalOpen(true)}
+        onOpenExport={() => setIsExportOpen(true)}
+        onEqualSplit={handleEqualSplitAll}
+      />
+
+      {/* Main Container */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        {/* Settings Bar */}
+        <SettingsBar settings={settings} onChange={setSettings} language={language} />
+
+        {/* Friends Management */}
+        <FriendsManager
+          friends={friends}
+          onAddFriend={handleAddFriend}
+          onRemoveFriend={handleRemoveFriend}
+          onUpdateFriendName={handleUpdateFriendName}
+          language={language}
+        />
+
+        {/* View Switcher Bar */}
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-1.5 bg-slate-200/70 dark:bg-slate-800/70 p-1 rounded-xl border border-slate-300/60 dark:border-slate-700/60">
+            <button
+              onClick={() => setViewMode('matrix')}
+              className={`flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+                viewMode === 'matrix'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Grid Matrix</span>
+            </button>
+
+            <button
+              onClick={() => setViewMode('cards')}
+              className={`flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+                viewMode === 'cards'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>Mobile Cards</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Food Items View */}
+        {viewMode === 'matrix' ? (
+          <ItemMatrix
+            items={items}
+            friends={friends}
+            onAddItem={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+            onUpdateItem={handleUpdateItem}
+            onToggleFriendItem={handleToggleFriendItem}
+            onToggleAllFriendsForItem={handleToggleAllFriendsForItem}
+            serviceChargePercent={settings.serviceChargePercent}
+            vatPercent={settings.vatPercent}
+            language={language}
+          />
+        ) : (
+          <ItemCards
+            items={items}
+            friends={friends}
+            onAddItem={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+            onUpdateItem={handleUpdateItem}
+            onToggleFriendItem={handleToggleFriendItem}
+            onToggleAllFriendsForItem={handleToggleAllFriendsForItem}
+            serviceChargePercent={settings.serviceChargePercent}
+            vatPercent={settings.vatPercent}
+            language={language}
+          />
+        )}
+
+        {/* Validation Warning Banner */}
+        <ValidationBanner
+          unassignedCount={calculation.unassignedItemIds.length}
+          language={language}
+        />
+
+        {/* Summary Breakdown Section & Paid Tracker */}
+        <SummarySection
+          calculation={calculation}
+          onTogglePaid={handleTogglePaid}
+          language={language}
+        />
+
+        {/* PromptPay QR Section */}
+        <PromptPaySection
+          settings={settings}
+          onChangePromptPay={(id) => setSettings({ ...settings, promptPayId: id })}
+          grandTotal={calculation.grandTotal}
+          language={language}
+        />
+      </main>
+
+      {/* Export Summary Modal */}
+      <ExportModal
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        calculation={calculation}
+        settings={settings}
+        language={language}
+      />
+
+      {/* Custom Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        onConfirm={handleConfirmReset}
+        language={language}
+      />
+    </div>
+  );
+}
