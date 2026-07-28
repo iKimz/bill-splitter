@@ -50,10 +50,11 @@ export default function Home() {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount & set default viewMode based on device
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
+      let hasUserViewMode = false;
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.friends) setFriends(parsed.friends);
@@ -62,7 +63,16 @@ export default function Home() {
         if (parsed.paidFriendIds) setPaidFriendIds(parsed.paidFriendIds);
         if (parsed.language) setLanguage(parsed.language);
         if (parsed.themeMode) setThemeMode(parsed.themeMode);
-        if (parsed.viewMode) setViewMode(parsed.viewMode);
+        if (parsed.viewMode) {
+          setViewMode(parsed.viewMode);
+          hasUserViewMode = true;
+        }
+      }
+
+      // Default viewMode to 'cards' for Mobile (<768px) and 'matrix' for Desktop if user has not set preference
+      if (!hasUserViewMode && typeof window !== 'undefined') {
+        const isMobileScreen = window.innerWidth < 768;
+        setViewMode(isMobileScreen ? 'cards' : 'matrix');
       }
     } catch (e) {
       console.error('Failed to load localStorage:', e);
@@ -186,6 +196,8 @@ export default function Home() {
     setItems(INITIAL_ITEMS);
     setSettings(INITIAL_SETTINGS);
     setPaidFriendIds([]);
+    const isMobileScreen = typeof window !== 'undefined' && window.innerWidth < 768;
+    setViewMode(isMobileScreen ? 'cards' : 'matrix');
     localStorage.removeItem(STORAGE_KEY);
   };
 
