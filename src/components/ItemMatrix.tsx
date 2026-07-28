@@ -88,10 +88,10 @@ export const ItemMatrix: React.FC<ItemMatrixProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
+              <tr className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold">
                 <th className="py-3 px-3 w-10 text-center">#</th>
                 <th className="py-3 px-3 min-w-[160px]">{t.itemName}</th>
-                <th className="py-3 px-3 w-28 text-right">{t.price} (฿)</th>
+                <th className="py-3 px-3 w-28 text-right">{t.price}</th>
                 <th className="py-3 px-3 w-20 text-center">{t.quantity}</th>
                 <th className="py-3 px-3 w-28 text-right">{t.subtotal}</th>
 

@@ -117,10 +117,10 @@ export const ItemCards: React.FC<ItemCardsProps> = ({
               </div>
 
               {/* Price & Quantity & Calculated Total */}
-              <div className="grid grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-850 p-2.5 rounded-xl text-xs">
+              <div className="grid grid-cols-3 gap-2 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl text-xs">
                 <div>
                   <label className="block text-[10px] text-slate-400 dark:text-slate-500 font-medium mb-1">
-                    {t.price} (฿)
+                    {t.price}
                   </label>
                   <input
                     type="number"
