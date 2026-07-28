@@ -85,6 +85,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
                 alt="LINE MAN"
                 width={64}
                 height={64}
+                style={{ width: 'auto', height: 'auto' }}
                 className="object-contain group-hover:scale-110 transition-transform duration-300"
               />
             </div>
@@ -134,6 +135,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
               alt="LINE MAN"
               width={44}
               height={44}
+              style={{ width: 'auto', height: 'auto' }}
               className="object-contain group-hover:rotate-6 transition-transform"
             />
             {/* Green Notification Ping Dot */}
