@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Language } from '../types';
-import { X, ExternalLink, Sparkles, ChevronRight } from 'lucide-react';
+import { X, ExternalLink, Sparkles } from 'lucide-react';
 
 interface LineManAffiliateWidgetProps {
   language: Language;
@@ -16,7 +16,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
 
   const affiliateUrl = 'https://lineman.onelink.me/1N3T/15etkm8u';
 
-  // Auto-collapse after 10 seconds
+  // Auto-collapse after 10 seconds on initial page load
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsExpanded(false);
@@ -30,14 +30,17 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
     <aside
       aria-label="LINE MAN Promotion"
       className="fixed bottom-5 right-5 z-40 transition-all duration-500 ease-in-out"
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
     >
       {isExpanded ? (
-        /* Full Expanded Banner View (Shows for first 10 seconds) */
+        /* Full Expanded Banner View */
         <div className="relative group bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-md text-white rounded-3xl p-3.5 shadow-2xl border border-emerald-500/40 hover:border-emerald-400 max-w-[320px] w-full animate-in fade-in slide-in-from-bottom-5 duration-300">
           {/* Close / Dismiss Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
+              e.preventDefault();
               setIsVisible(false);
             }}
             className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-rose-600 border border-slate-700 flex items-center justify-center transition-all shadow-md z-10"
@@ -46,22 +49,12 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
             <X className="w-3.5 h-3.5" />
           </button>
 
-          {/* Minimize Button */}
-          <button
-            onClick={() => setIsExpanded(false)}
-            className="absolute top-2 right-6 text-[10px] text-slate-400 hover:text-emerald-400 flex items-center gap-0.5"
-            title="Minimize"
-          >
-            <span>หุบ</span>
-            <ChevronRight className="w-3 h-3" />
-          </button>
-
           {/* Clickable Affiliate Banner Content */}
           <a
             href={affiliateUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 pt-1"
+            className="flex items-center gap-3 pt-0.5"
           >
             {/* Mascot Image */}
             <div className="relative w-16 h-16 shrink-0 flex items-center justify-center bg-emerald-950/30 rounded-2xl border border-emerald-500/30 p-1 overflow-hidden">
@@ -91,12 +84,13 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
           </a>
         </div>
       ) : (
-        /* Collapsed Compact Circular Badge View (After 10s or when minimized) */
+        /* Collapsed Compact Circular Badge View */
         <div className="relative group animate-in fade-in zoom-in-75 duration-300">
           {/* Close X Button for Collapsed Badge */}
           <button
             onClick={(e) => {
               e.stopPropagation();
+              e.preventDefault();
               setIsVisible(false);
             }}
             className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-rose-600 border border-slate-700 flex items-center justify-center transition-all shadow-md z-10"
@@ -110,7 +104,6 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
             href={affiliateUrl}
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => setIsExpanded(true)}
             className="w-14 h-14 rounded-full bg-slate-900/90 dark:bg-slate-900/90 backdrop-blur-md border-2 border-emerald-400 p-1.5 shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:border-emerald-300 group shadow-emerald-500/20"
             title={isEn ? 'Order LINE MAN Food' : 'สั่ง LINE MAN มื้อถัดไป 🛵'}
           >
@@ -121,7 +114,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
               height={44}
               className="object-contain group-hover:rotate-6 transition-transform"
             />
-            {/* Green Notification Dot */}
+            {/* Green Notification Ping Dot */}
             <span className="absolute top-0 left-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full animate-ping" />
             <span className="absolute top-0 left-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full" />
           </a>
