@@ -211,7 +211,6 @@ export default function Home() {
         onThemeChange={setThemeMode}
         onReset={() => setIsResetModalOpen(true)}
         onOpenExport={() => setIsExportOpen(true)}
-        onEqualSplit={handleEqualSplitAll}
       />
 
       {/* Main Container */}
@@ -267,6 +266,7 @@ export default function Home() {
             onUpdateItem={handleUpdateItem}
             onToggleFriendItem={handleToggleFriendItem}
             onToggleAllFriendsForItem={handleToggleAllFriendsForItem}
+            onEqualSplit={handleEqualSplitAll}
             serviceChargePercent={settings.serviceChargePercent}
             vatPercent={settings.vatPercent}
             language={language}
@@ -280,6 +280,7 @@ export default function Home() {
             onUpdateItem={handleUpdateItem}
             onToggleFriendItem={handleToggleFriendItem}
             onToggleAllFriendsForItem={handleToggleAllFriendsForItem}
+            onEqualSplit={handleEqualSplitAll}
             serviceChargePercent={settings.serviceChargePercent}
             vatPercent={settings.vatPercent}
             language={language}

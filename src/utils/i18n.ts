@@ -36,6 +36,7 @@ export const translations = {
     // Items
     itemsTitle: 'รายการอาหารและเครื่องดื่ม',
     addItem: 'เพิ่มอาหาร',
+    deleteItem: 'ลบรายการ',
     itemName: 'รายการอาหาร',
     price: 'ราคา (฿)',
     quantity: 'จำนวน',
@@ -122,6 +123,7 @@ export const translations = {
     // Items
     itemsTitle: 'Food & Drink Items',
     addItem: 'Add Item',
+    deleteItem: 'Delete Item',
     itemName: 'Item Name',
     price: 'Price (฿)',
     quantity: 'Qty',
