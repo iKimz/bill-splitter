@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Language, ThemeMode } from '../types';
 import { getTranslation } from '../utils/i18n';
-import { RotateCcw, Image as ImageIcon, Sun, Moon } from 'lucide-react';
+import { RotateCcw, Sun, Moon } from 'lucide-react';
 
 interface HeaderProps {
   language: Language;
@@ -97,15 +97,7 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden sm:inline">{t.reset}</span>
           </button>
 
-          {/* Export Receipt Image Button */}
-          <button
-            onClick={onOpenExport}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 rounded-xl shadow-xs transition-all active:scale-95"
-            title={t.exportSummary}
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-            <span>{t.exportSummary}</span>
-          </button>
+
         </div>
       </div>
     </header>

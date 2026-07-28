@@ -15,7 +15,7 @@ import { ExportModal } from '../components/ExportModal';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { SeoFaqSection } from '../components/SeoFaqSection';
 import { LineManAffiliateWidget } from '../components/LineManAffiliateWidget';
-import { LayoutGrid, Layers } from 'lucide-react';
+import { LayoutGrid, Layers, ImageDown } from 'lucide-react';
 
 const STORAGE_KEY = 'bill_splitter_data_v2';
 
@@ -331,6 +331,28 @@ export default function Home() {
 
       {/* LINE MAN Affiliate Floating Widget */}
       <LineManAffiliateWidget language={language} />
+
+      {/* ── Floating Save Bill Button (sticky bottom bar) ─────────── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-4 pb-4 pt-2 pointer-events-none">
+        <button
+          onClick={() => setIsExportOpen(true)}
+          className="
+            pointer-events-auto
+            flex items-center gap-2.5
+            px-6 py-3.5
+            bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
+            text-white font-bold text-sm
+            rounded-2xl
+            shadow-xl shadow-emerald-500/40
+            transition-all duration-200 active:scale-95
+            border border-emerald-500/50
+          "
+          aria-label="เซฟรูปสรุปบิล"
+        >
+          <ImageDown className="w-5 h-5" />
+          <span>เซฟรูปสรุปบิล</span>
+        </button>
+      </div>
     </div>
   );
 }

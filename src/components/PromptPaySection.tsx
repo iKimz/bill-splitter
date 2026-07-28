@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { QRCodeSVG } from 'qrcode.react';
 import { BillSettings, Language } from '../types';
 import { getTranslation } from '../utils/i18n';
 import { generatePromptPayPayload, sanitizePromptPayId } from '../utils/promptpay';
-import { QrCode, Download, ShieldCheck, AlertCircle } from 'lucide-react';
+import { QrCode, ShieldCheck, AlertCircle } from 'lucide-react';
+import { ThaiQrCard } from './ThaiQrCard';
 
 interface PromptPaySectionProps {
   settings: BillSettings;
@@ -26,19 +26,7 @@ export const PromptPaySection: React.FC<PromptPaySectionProps> = ({
 
   const qrPayload = isValid ? generatePromptPayPayload(settings.promptPayId) : '';
 
-  const downloadSVG = () => {
-    const svg = document.getElementById('promptpay-qr-svg');
-    if (!svg) return;
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const svgUrl = URL.createObjectURL(svgBlob);
-    const downloadLink = document.createElement('a');
-    downloadLink.href = svgUrl;
-    downloadLink.download = `PromptPay-QR-${settings.promptPayId || 'bill'}.svg`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
+
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs p-4 sm:p-5 mb-6 transition-colors duration-200">
@@ -85,27 +73,19 @@ export const PromptPaySection: React.FC<PromptPaySectionProps> = ({
           </p>
         </div>
 
-        {/* QR Code Column */}
-        <div className="flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl">
+        {/* Thai QR Payment Card Column */}
+        <div className="flex flex-col items-center justify-center p-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl min-h-[200px]">
           {isValid && qrPayload ? (
             <>
-              <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs mb-2">
-                <QRCodeSVG
-                  id="promptpay-qr-svg"
-                  value={qrPayload}
-                  size={140}
-                  level="M"
-                  includeMargin={true}
-                />
-              </div>
-              <p className="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">{t.scanToPay}</p>
-              <button
-                onClick={downloadSVG}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-lg transition-colors"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>{t.downloadQR}</span>
-              </button>
+              <ThaiQrCard
+                id="promptpay-qr-card"
+                qrPayload={qrPayload}
+                promptPayId={settings.promptPayId || ''}
+                qrSize={160}
+              />
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-2 text-center">
+                {t.scanToPay}
+              </p>
             </>
           ) : (
             <div className="text-center py-6">
