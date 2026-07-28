@@ -13,6 +13,7 @@ import { SummarySection } from '../components/SummarySection';
 import { PromptPaySection } from '../components/PromptPaySection';
 import { ExportModal } from '../components/ExportModal';
 import { ConfirmModal } from '../components/ConfirmModal';
+import { SeoFaqSection } from '../components/SeoFaqSection';
 import { LayoutGrid, Layers } from 'lucide-react';
 
 const STORAGE_KEY = 'bill_splitter_data_v2';
@@ -292,6 +293,9 @@ export default function Home() {
           grandTotal={calculation.grandTotal}
           language={language}
         />
+
+        {/* SEO & FAQ Content Section */}
+        <SeoFaqSection language={language} />
       </main>
 
       {/* Export Summary Modal */}
