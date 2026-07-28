@@ -212,7 +212,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                 {/* Centered QR card with fixed width */}
                 <div className="flex justify-center">
                   <div
-                    className="relative overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-white"
+                    className="relative overflow-hidden rounded-xl ring-1 ring-slate-200 ring-inset shadow-sm bg-white"
                     style={{ width: '200px', height: '240px' }}
                   >
                     {/* Template background (base64 data URI) */}
@@ -266,7 +266,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
         </div>
 
         {/* ── Footer Actions ──────────────────────── */}
-        <div className="flex-none p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2">
+        <div className="flex-none p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2 rounded-b-3xl">
           <button
             onClick={handleCopyText}
             className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition-all active:scale-95 min-w-[100px]"
