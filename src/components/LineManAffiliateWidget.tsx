@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Language } from '../types';
-import { X, ExternalLink, Sparkles } from 'lucide-react';
+import { X, ExternalLink, Sparkles, Smartphone } from 'lucide-react';
 
 interface LineManAffiliateWidgetProps {
   language: Language;
@@ -12,12 +12,20 @@ interface LineManAffiliateWidgetProps {
 export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ language }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const isEn = language === 'en';
 
   const affiliateUrl = 'https://lineman.onelink.me/1N3T/15etkm8u';
 
-  // Auto-collapse after 10 seconds on initial page load
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const mobileCheck = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+      setIsMobileDevice(mobileCheck);
+    }
+
+    // Auto-collapse after 10 seconds on initial page load
     const timer = setTimeout(() => {
       setIsExpanded(false);
     }, 10000);
@@ -26,26 +34,11 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
 
   const handleOpenLink = (e: React.MouseEvent) => {
     e.preventDefault();
-    const isMobile =
-      typeof window !== 'undefined' &&
-      /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    if (isMobile) {
+    if (isMobileDevice) {
       // Mobile: Direct deep-link to LINE MAN Mobile App
       window.location.href = affiliateUrl;
-    } else {
-      // Desktop: Open clean popup window without standard browser URL bar
-      const width = 500;
-      const height = 720;
-      const left = typeof window !== 'undefined' ? (window.screen.width - width) / 2 : 100;
-      const top = typeof window !== 'undefined' ? (window.screen.height - height) / 2 : 100;
-
-      window.open(
-        affiliateUrl,
-        'LineManOrderPopup',
-        `width=${width},height=${height},top=${top},left=${left},toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes`
-      );
     }
+    // On PC: Do nothing (click disabled)
   };
 
   if (!isVisible) return null;
@@ -53,7 +46,9 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
   return (
     <aside
       aria-label="LINE MAN Promotion"
-      className="fixed bottom-5 right-5 z-40 transition-all duration-500 ease-in-out cursor-pointer"
+      className={`fixed bottom-5 right-5 z-40 transition-all duration-500 ease-in-out ${
+        isMobileDevice ? 'cursor-pointer' : 'cursor-default'
+      }`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
@@ -70,7 +65,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
               e.preventDefault();
               setIsVisible(false);
             }}
-            className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-rose-600 border border-slate-700 flex items-center justify-center transition-all shadow-md z-10"
+            className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-rose-600 border border-slate-700 flex items-center justify-center transition-all shadow-md z-10 cursor-pointer"
             title={isEn ? 'Close' : 'ปิด'}
           >
             <X className="w-3.5 h-3.5" />
@@ -100,8 +95,19 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
                 {isEn ? 'Order LINE MAN Food' : 'สั่ง LINE MAN มื้อถัดไป 🛵'}
               </h3>
               <p className="text-[11px] text-slate-300 leading-snug flex items-center gap-1 font-medium">
-                <span>{isEn ? 'Tap to open app' : 'กดรับโค้ดส่วนลดคุ้มๆ'}</span>
-                <ExternalLink className="w-3 h-3 text-emerald-400 shrink-0" />
+                {isMobileDevice ? (
+                  <>
+                    <span>{isEn ? 'Tap to open app & save' : 'กดรับโค้ดส่วนลดในแอป'}</span>
+                    <ExternalLink className="w-3 h-3 text-emerald-400 shrink-0" />
+                  </>
+                ) : (
+                  <>
+                    <Smartphone className="w-3 h-3 text-slate-400 shrink-0" />
+                    <span className="text-slate-400 text-[10px]">
+                      {isEn ? 'Available on mobile devices' : 'รองรับการกดเปิดบนมือถือ 📱'}
+                    </span>
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -119,7 +125,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
               e.preventDefault();
               setIsVisible(false);
             }}
-            className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-rose-600 border border-slate-700 flex items-center justify-center transition-all shadow-md z-10"
+            className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-rose-600 border border-slate-700 flex items-center justify-center transition-all shadow-md z-10 cursor-pointer"
             title={isEn ? 'Close' : 'ปิด'}
           >
             <X className="w-3 h-3" />
@@ -127,8 +133,18 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
 
           {/* Floating Badge */}
           <div
-            className="w-14 h-14 rounded-full bg-slate-900/90 dark:bg-slate-900/90 backdrop-blur-md border-2 border-emerald-400 p-1.5 shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:border-emerald-300 group shadow-emerald-500/20"
-            title={isEn ? 'Order LINE MAN Food' : 'สั่ง LINE MAN มื้อถัดไป 🛵'}
+            className={`w-14 h-14 rounded-full bg-slate-900/90 dark:bg-slate-900/90 backdrop-blur-md border-2 border-emerald-400 p-1.5 shadow-xl flex items-center justify-center transition-all duration-300 group shadow-emerald-500/20 ${
+              isMobileDevice ? 'hover:scale-110 hover:border-emerald-300 cursor-pointer' : 'cursor-default'
+            }`}
+            title={
+              isMobileDevice
+                ? isEn
+                  ? 'Order LINE MAN Food'
+                  : 'สั่ง LINE MAN มื้อถัดไป 🛵'
+                : isEn
+                ? 'Available on mobile devices'
+                : 'รองรับการกดเปิดบนมือถือ 📱'
+            }
           >
             <Image
               src="/lineman-scooter.png"
