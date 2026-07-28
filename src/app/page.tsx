@@ -14,6 +14,7 @@ import { PromptPaySection } from '../components/PromptPaySection';
 import { ExportModal } from '../components/ExportModal';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { SeoFaqSection } from '../components/SeoFaqSection';
+import { LineManAffiliateWidget } from '../components/LineManAffiliateWidget';
 import { LayoutGrid, Layers } from 'lucide-react';
 
 const STORAGE_KEY = 'bill_splitter_data_v2';
@@ -314,6 +315,9 @@ export default function Home() {
         onConfirm={handleConfirmReset}
         language={language}
       />
+
+      {/* LINE MAN Affiliate Floating Widget */}
+      <LineManAffiliateWidget language={language} />
     </div>
   );
 }
