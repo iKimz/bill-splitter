@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              TH
+              🇹🇭 TH
             </button>
             <button
               onClick={() => onLanguageChange('en')}
@@ -97,7 +97,7 @@ export const Header: React.FC<HeaderProps> = ({
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              EN
+              🇬🇧 EN
             </button>
           </div>
 

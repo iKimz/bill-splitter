@@ -24,7 +24,7 @@ export const translations = {
     serviceCharge: 'ค่าบริการ (Service Charge %)',
     vat: 'ภาษี (VAT %)',
     discount: 'ส่วนลด (บาท)',
-    tip: 'ทิป / ค่าใช้จ่ายเพิ่ม (บาท)',
+    tip: 'ทิปพนักงาน (บาท)',
     baht: 'บาท',
     
     // Friends
@@ -111,7 +111,7 @@ export const translations = {
     serviceCharge: 'Service Charge (%)',
     vat: 'VAT (%)',
     discount: 'Discount (THB)',
-    tip: 'Tip / Extra Charge (THB)',
+    tip: 'Tip (THB)',
     baht: 'THB',
     
     // Friends
