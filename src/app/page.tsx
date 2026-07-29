@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BillItem, BillSettings, Friend, Language, ThemeMode } from '../types';
 import { calculateBill } from '../utils/calculation';
 import { Header } from '../components/Header';
@@ -12,12 +12,14 @@ import { ValidationBanner } from '../components/ValidationBanner';
 import { SummarySection } from '../components/SummarySection';
 import { PromptPaySection } from '../components/PromptPaySection';
 import { ExportModal } from '../components/ExportModal';
+import { ReceiptCard } from '../components/ReceiptCard';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { SeoFaqSection } from '../components/SeoFaqSection';
 import { LineManAffiliateWidget } from '../components/LineManAffiliateWidget';
 import { PwaInstallModal } from '../components/PwaInstallModal';
 import { AiReceiptModal } from '../components/AiReceiptModal';
-import { LayoutGrid, Layers, ImageDown } from 'lucide-react';
+import { toPng } from 'html-to-image';
+import { LayoutGrid, Layers, ImageDown, Loader2 } from 'lucide-react';
 
 const STORAGE_KEY = 'bill_splitter_data_v2';
 
@@ -49,6 +51,8 @@ export default function Home() {
   const [themeMode, setThemeMode] = useState<ThemeMode>('light');
   const [viewMode, setViewMode] = useState<'matrix' | 'cards'>('matrix');
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [exportImageUrl, setExportImageUrl] = useState<string>('');
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
   const [isAiScanOpen, setIsAiScanOpen] = useState(false);
@@ -56,6 +60,8 @@ export default function Home() {
   const [isIos, setIsIos] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const hiddenReceiptRef = useRef<HTMLDivElement>(null);
 
   // PWA & Standalone Detection
   useEffect(() => {
@@ -232,8 +238,42 @@ export default function Home() {
     localStorage.removeItem(STORAGE_KEY);
   };
 
+  const handleOpenExportModal = async () => {
+    if (!hiddenReceiptRef.current) return;
+    try {
+      setIsGeneratingImage(true);
+
+      // Microtask tick for layout flush
+      await new Promise((r) => setTimeout(r, 100));
+
+      // Generate high-res 3x PNG data URL from pure HTML/CSS/SVG ReceiptCard
+      const dataUrl = await toPng(hiddenReceiptRef.current, {
+        pixelRatio: 3,
+        backgroundColor: '#ffffff',
+      });
+
+      setExportImageUrl(dataUrl);
+      setIsExportOpen(true);
+    } catch (err) {
+      console.error('Failed to pre-generate receipt image:', err);
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans pb-16 transition-colors duration-200 selection:bg-blue-500 selection:text-white">
+      {/* Hidden offscreen ReceiptCard for pure 100% deterministic PNG pre-generation */}
+      <div className="fixed top-0 left-0 opacity-0 pointer-events-none -z-50" aria-hidden="true">
+        <div ref={hiddenReceiptRef}>
+          <ReceiptCard
+            calculation={calculation}
+            settings={settings}
+            language={language}
+          />
+        </div>
+      </div>
+
       {/* Header */}
       <Header
         language={language}
@@ -353,6 +393,7 @@ export default function Home() {
         calculation={calculation}
         settings={settings}
         language={language}
+        imageUrl={exportImageUrl}
       />
 
       {/* Custom Confirmation Modal */}
@@ -385,22 +426,34 @@ export default function Home() {
       {/* ── Floating Save Bill Button (sticky bottom bar) ─────────── */}
       <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center px-4 pb-4 pt-2 pointer-events-none">
         <button
-          onClick={() => setIsExportOpen(true)}
+          onClick={handleOpenExportModal}
+          disabled={isGeneratingImage}
           className="
             pointer-events-auto
             flex items-center gap-2.5
             px-6 py-3.5
             bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800
+            disabled:opacity-75
             text-white font-bold text-sm
             rounded-2xl
             shadow-xl shadow-emerald-500/40
             transition-all duration-200 active:scale-95
             border border-emerald-500/50
+            cursor-pointer
           "
           aria-label="เซฟรูปสรุปบิล"
         >
-          <ImageDown className="w-5 h-5" />
-          <span>เซฟรูปสรุปบิล</span>
+          {isGeneratingImage ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>{language === 'en' ? 'Generating Image...' : 'กำลังสร้างรูปภาพสรุปบิล...'}</span>
+            </>
+          ) : (
+            <>
+              <ImageDown className="w-5 h-5" />
+              <span>เซฟรูปสรุปบิล</span>
+            </>
+          )}
         </button>
       </div>
     </div>

@@ -1,12 +1,9 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { toPng } from 'html-to-image';
+import React, { useState } from 'react';
 import { BillSettings, CalculationResult, Language } from '../types';
 import { getTranslation } from '../utils/i18n';
-import { generatePromptPayPayload, sanitizePromptPayId } from '../utils/promptpay';
-import { ThaiQrCard } from './ThaiQrCard';
-import { X, Copy, Check, Utensils, ImageDown } from 'lucide-react';
+import { X, Copy, Check, ImageDown, Loader2 } from 'lucide-react';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -14,6 +11,7 @@ interface ExportModalProps {
   calculation: CalculationResult;
   settings: BillSettings;
   language: Language;
+  imageUrl: string;
 }
 
 export const ExportModal: React.FC<ExportModalProps> = ({
@@ -22,43 +20,21 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   calculation,
   settings,
   language,
+  imageUrl,
 }) => {
   const t = getTranslation(language);
-  const cardRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   if (!isOpen) return null;
 
-  const { type } = sanitizePromptPayId(settings.promptPayId || '');
-  const isValidPP = type !== 'invalid';
-  const qrPayload = isValidPP
-    ? generatePromptPayPayload(settings.promptPayId)
-    : '';
-
-  // Format PromptPay ID for display
-  const cleanId = (settings.promptPayId || '').replace(/\D/g, '');
-  const formattedPP =
-    cleanId.length === 10
-      ? `${cleanId.slice(0, 3)}-${cleanId.slice(3, 6)}-${cleanId.slice(6)}`
-      : cleanId.length === 13
-      ? `${cleanId.slice(0, 1)}-${cleanId.slice(1, 5)}-${cleanId.slice(5, 10)}-${cleanId.slice(10, 12)}-${cleanId.slice(12)}`
-      : settings.promptPayId;
-
   const handleDownloadImage = async () => {
-    if (!cardRef.current) return;
+    if (!imageUrl) return;
     try {
-      setIsGenerating(true);
+      setIsDownloading(true);
 
-      // Generate the data URL
-      const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
-        pixelRatio: 3,
-        backgroundColor: '#ffffff',
-      });
-
-      // Convert data URL to Blob for reliable download with filename
-      const res = await fetch(dataUrl);
+      // Convert Data URL to Blob for reliable cross-platform download
+      const res = await fetch(imageUrl);
       const blob = await res.blob();
       const blobUrl = URL.createObjectURL(blob);
 
@@ -70,12 +46,11 @@ export const ExportModal: React.FC<ExportModalProps> = ({
       link.click();
       document.body.removeChild(link);
 
-      // Clean up
-      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
     } catch (err) {
-      console.error('Failed to generate image:', err);
+      console.error('Failed to download image:', err);
     } finally {
-      setIsGenerating(false);
+      setIsDownloading(false);
     }
   };
 
@@ -85,190 +60,107 @@ export const ExportModal: React.FC<ExportModalProps> = ({
     text += `---------------------------------\n`;
     calculation.personSummaries.forEach((person) => {
       const paidTag = person.isPaid ? ' (โอนแล้ว)' : '';
-      text += `${person.friendName}${paidTag}: ${person.finalTotal.toLocaleString('th-TH', {
+      text += `${person.friendName}${paidTag}: ฿${person.finalTotal.toLocaleString('th-TH', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })} บาท\n`;
+      })}\n`;
+      if (person.items.length > 0) {
+        const itemNames = person.items
+          .map((i) => (i.splitCount > 1 ? `${i.itemName} (1/${i.splitCount})` : i.itemName))
+          .join(', ');
+        text += `  • รายการ: ${itemNames}\n`;
+      }
     });
+
     text += `---------------------------------\n`;
-    text += `ยอดรวมทั้งบิล: ${calculation.grandTotal.toLocaleString('th-TH', {
+    text += `ยอดรวมทั้งสิ้น: ฿${calculation.grandTotal.toLocaleString('th-TH', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    })} บาท\n`;
+    })}\n`;
 
-    if (isValidPP && settings.promptPayId) {
-      text += `พร้อมเพย์: ${settings.promptPayId}\n`;
+    if (settings.promptPayId) {
+      text += `PromptPay: ${settings.promptPayId}\n`;
     }
+    text += `สร้างด้วย Bill Splitter`;
 
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
   return (
-    /* ── Backdrop ──────────────────────────────── */
     <div
-      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* ── Modal Floating Card ─────────────────── */}
-      <div
-        className="
-          bg-white dark:bg-slate-900
-          w-full max-w-md
-          rounded-3xl
-          shadow-2xl border border-slate-100 dark:border-slate-800
-          flex flex-col
-          max-h-[90dvh] sm:max-h-[85vh]
-          my-auto
-          transition-all
-          overflow-hidden
-        "
-      >
-        {/* ── Header ──────────────────────────────── */}
-        <div className="flex-none px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-            <Utensils className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            {t.exportModalTitle}
-          </h3>
+      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90dvh] sm:max-h-[85vh] my-auto animate-in fade-in zoom-in-95 duration-200">
+        {/* ── Modal Header ───────────────────────── */}
+        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+          <div>
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+              {t.exportModalTitle}
+            </h3>
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+              {language === 'en' ? 'Tap & hold to save to Photos or share' : 'กดค้างที่รูปภาพเพื่อบันทึกรูป หรือกดปุ่มดาวน์โหลด'}
+            </p>
+          </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="ปิด"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* ── Scrollable Body ─────────────────────── */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-950">
-          {/* Receipt card — exported as PNG */}
-          <div
-            ref={cardRef}
-            className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-md space-y-3.5 text-slate-800"
-          >
-            {/* Card Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs shrink-0">
-                  BS
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-slate-900">Bill Splitter Receipt</h4>
-                  <span className="text-[10px] text-slate-400 font-medium">
-                    {new Date().toLocaleDateString('th-TH')}
-                  </span>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-[10px] font-bold uppercase text-slate-400 block">Grand Total</span>
-                <span className="text-sm font-extrabold text-blue-600">
-                  ฿{calculation.grandTotal.toLocaleString('th-TH', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
+        {/* ── Scrollable Body: Display Pre-generated PNG Image Directly ── */}
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-950 flex justify-center items-start">
+          {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={imageUrl}
+              alt="Bill Splitter Receipt Summary"
+              className="w-full max-w-[360px] rounded-2xl shadow-md border border-slate-200 bg-white object-contain select-auto cursor-pointer"
+            />
+          ) : (
+            <div className="py-12 text-center text-slate-400 text-xs">
+              กำลังสร้างรูปภาพสรุปบิล...
             </div>
-
-            {/* Person list with item bubbles */}
-            <div className="space-y-2">
-              {calculation.personSummaries.map((person) => (
-                <div
-                  key={person.friendId}
-                  className="p-2.5 rounded-xl bg-slate-50/90 border border-slate-100/80 text-xs space-y-1.5"
-                >
-                  {/* Top row: Avatar + Name + Paid badge | Amount */}
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0 shadow-2xs"
-                        style={{ backgroundColor: person.avatarColor }}
-                      >
-                        {person.friendName.charAt(0).toUpperCase()}
-                      </div>
-                      <span className="font-bold text-slate-800 flex items-center gap-1.5 truncate">
-                        <span className="truncate">{person.friendName}</span>
-                        {person.isPaid && (
-                          <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.2 rounded font-semibold shrink-0">
-                            โอนแล้ว
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                    <span className="font-bold text-emerald-600 shrink-0 text-xs">
-                      ฿{person.finalTotal.toLocaleString('th-TH', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
-                  </div>
-
-                  {/* Item Bubbles / Pills list */}
-                  {person.items.length > 0 ? (
-                    <div className="flex flex-wrap gap-1 pl-7">
-                      {person.items.map((item) => (
-                        <span
-                          key={item.itemId}
-                          className="inline-flex items-center gap-1 text-[10px] font-medium bg-white text-slate-600 px-2 py-0.5 rounded-md border border-slate-200/80 shadow-2xs leading-tight"
-                        >
-                          <span>{item.itemName}</span>
-                          {item.splitCount > 1 && (
-                            <span className="text-[9px] text-slate-400 font-normal">
-                              (1/{item.splitCount})
-                            </span>
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="pl-7 text-[10px] text-slate-400 italic">
-                      {language === 'en' ? 'No items assigned' : 'ไม่ได้หารรายการใด'}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* ── Thai QR Payment section ───────────────────────────────
-                 Uses template.png as background via base64 data URI (reliable for export).
-                 Vertical centered layout: Template header → QR → PromptPay ID.
-            ────────────────────────────────────────────────────────── */}
-            {isValidPP && qrPayload && (
-              <div className="pt-3 border-t border-slate-100 flex justify-center">
-                <ThaiQrCard
-                  qrPayload={qrPayload}
-                  promptPayId={settings.promptPayId}
-                  qrSize={140}
-                  className="max-w-[220px]"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Tip */}
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center mt-3">
-            รูปที่บันทึกจะมีความละเอียด 3× สำหรับการแชร์
-          </p>
+          )}
         </div>
 
-        {/* ── Footer Actions ──────────────────────── */}
-        <div className="flex-none p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2.5 rounded-b-3xl">
+        {/* ── Action Buttons Footer ──────────────── */}
+        <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row gap-2 shrink-0 rounded-b-3xl">
           <button
-            onClick={handleCopyText}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition-all active:scale-95 min-w-[100px]"
+            onClick={handleDownloadImage}
+            disabled={isDownloading || !imageUrl}
+            className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-500/20 transition-all active:scale-95 cursor-pointer"
           >
-            {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? t.copiedTextSuccess : t.copyText}</span>
+            {isDownloading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <ImageDown className="w-4 h-4" />
+            )}
+            <span>{t.downloadImage}</span>
           </button>
 
           <button
-            onClick={handleDownloadImage}
-            disabled={isGenerating}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-300 text-white text-sm font-bold rounded-xl shadow-md shadow-blue-500/30 transition-all active:scale-95"
+            onClick={handleCopyText}
+            className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition-all active:scale-95 cursor-pointer"
           >
-            <ImageDown className="w-4 h-4" />
-            <span>{isGenerating ? 'กำลังสร้างรูป...' : t.downloadImage}</span>
+            {copied ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-500" />
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  {language === 'en' ? 'Copied!' : 'คัดลอกแล้ว'}
+                </span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-4 h-4 text-slate-500" />
+                <span>{t.copyText}</span>
+              </>
+            )}
           </button>
         </div>
       </div>
