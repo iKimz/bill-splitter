@@ -152,9 +152,23 @@ export const ItemCards: React.FC<ItemCardsProps> = ({
                   <label className="block text-[10px] text-slate-400 dark:text-slate-500 font-medium mb-1">
                     {t.subtotal}
                   </label>
-                  <span className="block py-1 font-mono font-bold text-slate-900 dark:text-white text-sm">
-                    {itemTotal.toFixed(2)}
-                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="any"
+                    value={
+                      item.price || item.quantity
+                        ? parseFloat(((item.price || 0) * (item.quantity || 1)).toFixed(2)) || ''
+                        : ''
+                    }
+                    onChange={(e) => {
+                      const newSub = parseFloat(e.target.value) || 0;
+                      const qty = item.quantity || 1;
+                      onUpdateItem(item.id, { price: newSub / qty });
+                    }}
+                    placeholder="0"
+                    className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1 px-2 text-right font-mono font-bold text-slate-900 dark:text-white"
+                  />
                 </div>
               </div>
 

@@ -167,9 +167,25 @@ export const ItemMatrix: React.FC<ItemMatrixProps> = ({
                       />
                     </td>
 
-                    {/* Calculated Total */}
-                    <td className="py-2.5 px-3 text-right font-mono font-bold text-slate-900 dark:text-white">
-                      {itemTotal.toFixed(2)}
+                    {/* Item Subtotal (editable bi-directionally) */}
+                    <td className="py-2.5 px-3 text-right">
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={
+                          item.price || item.quantity
+                            ? parseFloat(((item.price || 0) * (item.quantity || 1)).toFixed(2)) || ''
+                            : ''
+                        }
+                        onChange={(e) => {
+                          const newSub = parseFloat(e.target.value) || 0;
+                          const qty = item.quantity || 1;
+                          onUpdateItem(item.id, { price: newSub / qty });
+                        }}
+                        placeholder="0"
+                        className="w-24 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg py-1 px-2 text-right text-slate-900 dark:text-white font-mono font-bold focus:ring-1 focus:ring-blue-500 text-xs"
+                      />
                     </td>
 
                     {/* Friend Checkboxes */}
