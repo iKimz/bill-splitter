@@ -3,7 +3,7 @@
 import React from 'react';
 import { BillItem, Friend, Language } from '../types';
 import { getTranslation } from '../utils/i18n';
-import { Plus, Trash2, Users } from 'lucide-react';
+import { Plus, Trash2, Users, Sparkles } from 'lucide-react';
 
 interface ItemMatrixProps {
   items: BillItem[];
@@ -14,6 +14,7 @@ interface ItemMatrixProps {
   onToggleFriendItem: (itemId: string, friendId: string) => void;
   onToggleAllFriendsForItem: (itemId: string) => void;
   onEqualSplit?: () => void;
+  onOpenAiScan?: () => void;
   serviceChargePercent: number;
   vatPercent: number;
   language: Language;
@@ -28,6 +29,7 @@ export const ItemMatrix: React.FC<ItemMatrixProps> = ({
   onToggleFriendItem,
   onToggleAllFriendsForItem,
   onEqualSplit,
+  onOpenAiScan,
   serviceChargePercent,
   vatPercent,
   language,
@@ -50,7 +52,7 @@ export const ItemMatrix: React.FC<ItemMatrixProps> = ({
             {t.itemsTitle} ({items.length})
           </h2>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center flex-wrap gap-2">
           {onEqualSplit && (
             <button
               type="button"
@@ -62,6 +64,20 @@ export const ItemMatrix: React.FC<ItemMatrixProps> = ({
               <span>{t.equalSplit}</span>
             </button>
           )}
+
+          {/* AI Scan Receipt Button (Coming Soon) */}
+          {onOpenAiScan && (
+            <button
+              type="button"
+              onClick={onOpenAiScan}
+              className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/60 dark:to-indigo-950/60 hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/80 dark:hover:to-indigo-900/80 text-purple-700 dark:text-purple-300 border border-purple-200/90 dark:border-purple-800 text-xs font-bold rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer"
+              title={t.scanReceipt}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 animate-pulse" />
+              <span>{t.scanReceipt}</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={onAddItem}

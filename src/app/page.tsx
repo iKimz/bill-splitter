@@ -16,6 +16,7 @@ import { ConfirmModal } from '../components/ConfirmModal';
 import { SeoFaqSection } from '../components/SeoFaqSection';
 import { LineManAffiliateWidget } from '../components/LineManAffiliateWidget';
 import { PwaInstallModal } from '../components/PwaInstallModal';
+import { AiReceiptModal } from '../components/AiReceiptModal';
 import { LayoutGrid, Layers, ImageDown } from 'lucide-react';
 
 const STORAGE_KEY = 'bill_splitter_data_v2';
@@ -50,6 +51,7 @@ export default function Home() {
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
+  const [isAiScanOpen, setIsAiScanOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIos, setIsIos] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
@@ -297,6 +299,7 @@ export default function Home() {
             onToggleFriendItem={handleToggleFriendItem}
             onToggleAllFriendsForItem={handleToggleAllFriendsForItem}
             onEqualSplit={handleEqualSplitAll}
+            onOpenAiScan={() => setIsAiScanOpen(true)}
             serviceChargePercent={settings.serviceChargePercent}
             vatPercent={settings.vatPercent}
             language={language}
@@ -311,6 +314,7 @@ export default function Home() {
             onToggleFriendItem={handleToggleFriendItem}
             onToggleAllFriendsForItem={handleToggleAllFriendsForItem}
             onEqualSplit={handleEqualSplitAll}
+            onOpenAiScan={() => setIsAiScanOpen(true)}
             serviceChargePercent={settings.serviceChargePercent}
             vatPercent={settings.vatPercent}
             language={language}
@@ -366,6 +370,13 @@ export default function Home() {
         language={language}
         deferredPrompt={deferredPrompt}
         isIos={isIos}
+      />
+
+      {/* AI Receipt Scanner Coming Soon Modal */}
+      <AiReceiptModal
+        isOpen={isAiScanOpen}
+        onClose={() => setIsAiScanOpen(false)}
+        language={language}
       />
 
       {/* LINE MAN Affiliate Floating Widget */}

@@ -36,6 +36,10 @@ export const translations = {
     // Items
     itemsTitle: 'รายการอาหาร',
     addItem: 'เพิ่มรายการ',
+    scanReceipt: 'สแกนใบเสร็จ (AI)',
+    aiScanTitle: 'สแกนใบเสร็จด้วย AI',
+    aiScanDesc: 'ระบบกำลังพัฒนา AI สำหรับอ่านภาพถ่ายใบเสร็จร้านอาหารอัตโนมัติ เพียงถ่ายรูปหรืออัปโหลดใบเสร็จ ระบบจะดึงชื่อเมนูและราคาลงตารางให้อัตโนมัติทันที',
+    comingSoon: 'เร็วๆ นี้',
     deleteItem: 'ลบรายการ',
     itemName: 'ชื่อรายการ',
     price: 'ราคา/หน่วย (บาท)',
@@ -123,6 +127,10 @@ export const translations = {
     // Items
     itemsTitle: 'Food & Drink Items',
     addItem: 'Add Item',
+    scanReceipt: 'Scan Receipt (AI)',
+    aiScanTitle: 'AI Receipt Scanner',
+    aiScanDesc: 'We are developing an AI-powered receipt scanner. Simply upload or take a photo of your restaurant receipt, and AI will automatically extract items and prices directly into your bill.',
+    comingSoon: 'Coming Soon',
     deleteItem: 'Delete Item',
     itemName: 'Item Name',
     price: 'Unit Price (THB)',
