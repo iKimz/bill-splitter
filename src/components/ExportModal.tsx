@@ -82,23 +82,23 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
   const handleCopyText = () => {
     const dateStr = new Date().toLocaleDateString('th-TH');
-    let text = `🧾 สรุปรายการหารค่าอาหาร (${dateStr})\n`;
+    let text = `สรุปรายการหารค่าอาหาร (${dateStr})\n`;
     text += `---------------------------------\n`;
     calculation.personSummaries.forEach((person) => {
-      const paidTag = person.isPaid ? ' (โอนแล้ว 💸)' : '';
-      text += `👤 ${person.friendName}${paidTag}: ${person.finalTotal.toLocaleString('th-TH', {
+      const paidTag = person.isPaid ? ' (โอนแล้ว)' : '';
+      text += `${person.friendName}${paidTag}: ${person.finalTotal.toLocaleString('th-TH', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })} บาท\n`;
     });
     text += `---------------------------------\n`;
-    text += `💰 ยอดรวมทั้งบิล: ${calculation.grandTotal.toLocaleString('th-TH', {
+    text += `ยอดรวมทั้งบิล: ${calculation.grandTotal.toLocaleString('th-TH', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })} บาท\n`;
 
     if (isValidPP && settings.promptPayId) {
-      text += `📲 พร้อมเพย์: ${settings.promptPayId}\n`;
+      text += `พร้อมเพย์: ${settings.promptPayId}\n`;
     }
 
     navigator.clipboard.writeText(text);

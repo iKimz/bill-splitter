@@ -158,7 +158,7 @@ export const SummarySection: React.FC<SummarySectionProps> = ({
                     {person.isPaid ? (
                       <>
                         <CheckCircle2 className="w-3 h-3 text-white" />
-                        <span>{t.paidStatus} 💸</span>
+                        <span>{t.paidStatus}</span>
                       </>
                     ) : (
                       <>

@@ -92,7 +92,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
                 <span>{isEn ? 'Special Offer' : 'แจกส่วนลด'}</span>
               </div>
               <h3 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors leading-tight mb-1">
-                {isEn ? 'Order LINE MAN Food' : 'สั่ง LINE MAN มื้อถัดไป 🛵'}
+                {isEn ? 'Order LINE MAN Food' : 'สั่ง LINE MAN มื้อถัดไป'}
               </h3>
               <p className="text-[11px] text-slate-300 leading-snug flex items-center gap-1 font-medium">
                 {isMobileDevice ? (
@@ -140,7 +140,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
               isMobileDevice
                 ? isEn
                   ? 'Order LINE MAN Food'
-                  : 'สั่ง LINE MAN มื้อถัดไป 🛵'
+                  : 'สั่ง LINE MAN มื้อถัดไป'
                 : isEn
                 ? 'Please open on mobile'
                 : 'กรุณาเปิดบนมือถือ'
