@@ -172,35 +172,61 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               </div>
             </div>
 
-            {/* Person list */}
-            <div className="space-y-1.5">
+            {/* Person list with item bubbles */}
+            <div className="space-y-2">
               {calculation.personSummaries.map((person) => (
                 <div
                   key={person.friendId}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50/90 text-xs"
+                  className="p-2.5 rounded-xl bg-slate-50/90 border border-slate-100/80 text-xs space-y-1.5"
                 >
-                  <div className="flex items-center gap-2 min-w-0 pr-2">
-                    <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-                      style={{ backgroundColor: person.avatarColor }}
-                    >
-                      {person.friendName.charAt(0).toUpperCase()}
+                  {/* Top row: Avatar + Name + Paid badge | Amount */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0 shadow-2xs"
+                        style={{ backgroundColor: person.avatarColor }}
+                      >
+                        {person.friendName.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="font-bold text-slate-800 flex items-center gap-1.5 truncate">
+                        <span className="truncate">{person.friendName}</span>
+                        {person.isPaid && (
+                          <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.2 rounded font-semibold shrink-0">
+                            โอนแล้ว
+                          </span>
+                        )}
+                      </span>
                     </div>
-                    <span className="font-bold text-slate-800 flex items-center gap-1.5 truncate">
-                      <span className="truncate">{person.friendName}</span>
-                      {person.isPaid && (
-                        <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-semibold shrink-0">
-                          โอนแล้ว
-                        </span>
-                      )}
+                    <span className="font-bold text-emerald-600 shrink-0 text-xs">
+                      ฿{person.finalTotal.toLocaleString('th-TH', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </span>
                   </div>
-                  <span className="font-bold text-emerald-600 shrink-0">
-                    ฿{person.finalTotal.toLocaleString('th-TH', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </span>
+
+                  {/* Item Bubbles / Pills list */}
+                  {person.items.length > 0 ? (
+                    <div className="flex flex-wrap gap-1 pl-7">
+                      {person.items.map((item) => (
+                        <span
+                          key={item.itemId}
+                          className="inline-flex items-center gap-1 text-[10px] font-medium bg-white text-slate-600 px-2 py-0.5 rounded-md border border-slate-200/80 shadow-2xs leading-tight"
+                        >
+                          <span>{item.itemName}</span>
+                          {item.splitCount > 1 && (
+                            <span className="text-[9px] text-slate-400 font-normal">
+                              (1/{item.splitCount})
+                            </span>
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="pl-7 text-[10px] text-slate-400 italic">
+                      {language === 'en' ? 'No items assigned' : 'ไม่ได้หารรายการใด'}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
