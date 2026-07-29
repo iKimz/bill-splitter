@@ -70,7 +70,7 @@ export const ThaiQrCard: React.FC<ThaiQrCardProps> = ({
         <img
           src={THAI_QR_BANNER_URI}
           alt="PromptPay"
-          className="h-8 object-contain"
+          className="h-10 object-contain"
         />
       </div>
 
