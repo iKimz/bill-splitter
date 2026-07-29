@@ -15,6 +15,7 @@ import { ExportModal } from '../components/ExportModal';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { SeoFaqSection } from '../components/SeoFaqSection';
 import { LineManAffiliateWidget } from '../components/LineManAffiliateWidget';
+import { PwaInstallModal } from '../components/PwaInstallModal';
 import { LayoutGrid, Layers, ImageDown } from 'lucide-react';
 
 const STORAGE_KEY = 'bill_splitter_data_v2';
@@ -48,7 +49,35 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<'matrix' | 'cards'>('matrix');
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isIos, setIsIos] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // PWA & Standalone Detection
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isStandaloneMode =
+        window.matchMedia('(display-mode: standalone)').matches ||
+        (navigator as any).standalone === true;
+      setIsStandalone(isStandaloneMode);
+
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
+      setIsIos(isIosDevice);
+
+      const handleBeforeInstallPrompt = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+      };
+
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      return () => {
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      };
+    }
+  }, []);
 
   // Load from localStorage on mount & set default viewMode based on device
   useEffect(() => {
@@ -210,7 +239,8 @@ export default function Home() {
         onLanguageChange={setLanguage}
         onThemeChange={setThemeMode}
         onReset={() => setIsResetModalOpen(true)}
-        onOpenExport={() => setIsExportOpen(true)}
+        onOpenInstall={() => setIsPwaModalOpen(true)}
+        isStandalone={isStandalone}
       />
 
       {/* Main Container */}
@@ -327,6 +357,15 @@ export default function Home() {
         onClose={() => setIsResetModalOpen(false)}
         onConfirm={handleConfirmReset}
         language={language}
+      />
+
+      {/* PWA Add to Home Screen Modal */}
+      <PwaInstallModal
+        isOpen={isPwaModalOpen}
+        onClose={() => setIsPwaModalOpen(false)}
+        language={language}
+        deferredPrompt={deferredPrompt}
+        isIos={isIos}
       />
 
       {/* LINE MAN Affiliate Floating Widget */}

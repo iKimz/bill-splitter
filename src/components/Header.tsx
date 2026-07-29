@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Language, ThemeMode } from '../types';
 import { getTranslation } from '../utils/i18n';
-import { RotateCcw, Sun, Moon } from 'lucide-react';
+import { RotateCcw, Sun, Moon, PlusCircle, Smartphone } from 'lucide-react';
 
 interface HeaderProps {
   language: Language;
@@ -12,7 +12,8 @@ interface HeaderProps {
   onLanguageChange: (lang: Language) => void;
   onThemeChange: (theme: ThemeMode) => void;
   onReset: () => void;
-  onOpenExport: () => void;
+  onOpenInstall?: () => void;
+  isStandalone?: boolean;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,13 +22,14 @@ export const Header: React.FC<HeaderProps> = ({
   onLanguageChange,
   onThemeChange,
   onReset,
-  onOpenExport,
+  onOpenInstall,
+  isStandalone = false,
 }) => {
   const t = getTranslation(language);
 
   return (
     <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-xs transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
         {/* Logo & Title */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-blue-500/20 shrink-0">
@@ -54,6 +56,18 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Actions & Switches */}
         <div className="flex items-center flex-wrap gap-2">
+          {/* Add to Home Screen / Install Button (Hidden if already in Standalone app mode) */}
+          {!isStandalone && onOpenInstall && (
+            <button
+              onClick={onOpenInstall}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/80 border border-blue-200 dark:border-blue-800 rounded-xl transition-all active:scale-95 shadow-2xs"
+              title={language === 'en' ? 'Add to Home Screen' : 'เพิ่มไปยังหน้าจอหลัก'}
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>{language === 'en' ? 'Install' : 'ติดตั้งแอป'}</span>
+            </button>
+          )}
+
           {/* Theme Toggle */}
           <button
             onClick={() => onThemeChange(theme === 'dark' ? 'light' : 'dark')}
@@ -96,8 +110,6 @@ export const Header: React.FC<HeaderProps> = ({
             <RotateCcw className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">{t.reset}</span>
           </button>
-
-
         </div>
       </div>
     </header>
