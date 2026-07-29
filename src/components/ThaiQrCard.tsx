@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { THAI_QR_LOGO_URI } from '../assets/thaiQrAssets';
+import { THAI_QR_LOGO_URI, THAI_QR_BANNER_URI } from '../assets/thaiQrAssets';
 
 interface ThaiQrCardProps {
   qrPayload: string;
@@ -68,7 +68,7 @@ export const ThaiQrCard: React.FC<ThaiQrCardProps> = ({
       <div className="pt-3 pb-1.5 flex justify-center items-center bg-slate-50/50 border-b border-slate-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={THAI_QR_LOGO_URI}
+          src={THAI_QR_BANNER_URI}
           alt="PromptPay"
           className="h-8 object-contain"
         />
