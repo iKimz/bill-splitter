@@ -5,8 +5,7 @@ import { toPng } from 'html-to-image';
 import { BillSettings, CalculationResult, Language } from '../types';
 import { getTranslation } from '../utils/i18n';
 import { generatePromptPayPayload, sanitizePromptPayId } from '../utils/promptpay';
-import { QRCodeSVG } from 'qrcode.react';
-import { THAI_QR_TEMPLATE_URI, THAI_QR_LOGO_URI } from '../assets/thaiQrAssets';
+import { ThaiQrCard } from './ThaiQrCard';
 import { X, Copy, Check, Utensils, ImageDown } from 'lucide-react';
 
 interface ExportModalProps {
@@ -236,50 +235,13 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                  Vertical centered layout: Template header → QR → PromptPay ID.
             ────────────────────────────────────────────────────────── */}
             {isValidPP && qrPayload && (
-              <div className="pt-3 border-t border-slate-100">
-                {/* Centered QR card with fixed width */}
-                <div className="flex justify-center">
-                  <div
-                    className="relative overflow-hidden rounded-xl ring-1 ring-slate-200 ring-inset shadow-sm bg-white"
-                    style={{
-                      width: '200px',
-                      height: '240px',
-                      backgroundImage: `url(${THAI_QR_TEMPLATE_URI})`,
-                      backgroundSize: '100% 100%',
-                      backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'center',
-                    }}
-                  >
-
-                    {/* QR code positioned in the white area of template */}
-                    <div
-                      className="absolute left-0 right-0 flex flex-col items-center"
-                      style={{ top: '32%', bottom: '0' }}
-                    >
-                      <QRCodeSVG
-                        value={qrPayload}
-                        size={110}
-                        level="H"
-                        includeMargin={false}
-                        imageSettings={{
-                          src: THAI_QR_LOGO_URI,
-                          x: undefined,
-                          y: undefined,
-                          height: 20,
-                          width: 24,
-                          excavate: false,
-                        }}
-                      />
-                      {/* PromptPay ID under QR */}
-                      <p className="text-[9px] font-bold text-[#0E3D67] tracking-wider font-mono mt-1">
-                        {formattedPP}
-                      </p>
-                      <p className="text-[7px] text-slate-400 mt-0.5">
-                        สแกนโอนผ่าน Mobile Banking
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div className="pt-3 border-t border-slate-100 flex justify-center">
+                <ThaiQrCard
+                  qrPayload={qrPayload}
+                  promptPayId={settings.promptPayId}
+                  qrSize={140}
+                  className="max-w-[220px]"
+                />
               </div>
             )}
           </div>
