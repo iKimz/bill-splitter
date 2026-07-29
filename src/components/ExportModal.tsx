@@ -215,18 +215,15 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                 <div className="flex justify-center">
                   <div
                     className="relative overflow-hidden rounded-xl ring-1 ring-slate-200 ring-inset shadow-sm bg-white"
-                    style={{ width: '200px', height: '240px' }}
+                    style={{
+                      width: '200px',
+                      height: '240px',
+                      backgroundImage: `url(${THAI_QR_TEMPLATE_URI})`,
+                      backgroundSize: '100% 100%',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'center',
+                    }}
                   >
-                    {/* Template background (base64 data URI) */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={THAI_QR_TEMPLATE_URI}
-                      alt=""
-                      aria-hidden="true"
-                      className="absolute inset-0 w-full h-full"
-                      style={{ objectFit: 'fill' }}
-                      draggable={false}
-                    />
 
                     {/* QR code positioned in the white area of template */}
                     <div

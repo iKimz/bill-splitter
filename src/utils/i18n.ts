@@ -82,7 +82,7 @@ export const translations = {
 
     // Export Modal
     exportModalTitle: 'การ์ดสรุปรายการบิลอาหาร',
-    downloadImage: 'ดาวน์โหลดเป็นรูปภาพ (PNG)',
+    downloadImage: 'เซฟรูปภาพ',
     copyText: 'คัดลอกข้อความสรุป',
     copiedTextSuccess: 'คัดลอกข้อความสรุปเรียบร้อยแล้ว!',
     close: 'ปิด',
@@ -169,7 +169,7 @@ export const translations = {
 
     // Export Modal
     exportModalTitle: 'Bill Summary Receipt Card',
-    downloadImage: 'Download Image (PNG)',
+    downloadImage: 'Save Image',
     copyText: 'Copy Summary Text',
     copiedTextSuccess: 'Copied summary to clipboard!',
     close: 'Close',

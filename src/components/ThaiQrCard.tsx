@@ -49,18 +49,16 @@ export const ThaiQrCard: React.FC<ThaiQrCardProps> = ({
     <div
       id={id}
       className={`relative overflow-hidden rounded-2xl shadow-lg border border-slate-200 bg-white select-none ${className}`}
-      style={{ aspectRatio: '1000 / 1200', maxWidth: '280px', width: '100%' }}
+      style={{
+        aspectRatio: '1000 / 1200',
+        maxWidth: '280px',
+        width: '100%',
+        backgroundImage: `url(${THAI_QR_TEMPLATE_URI})`,
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+      }}
     >
-      {/* ── Official template background (Thai QR header + PromptPay logo box) ── */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={THAI_QR_TEMPLATE_URI}
-        alt="Thai QR Payment"
-        aria-hidden="true"
-        className="absolute inset-0 w-full h-full"
-        style={{ objectFit: 'fill' }}
-        draggable={false}
-      />
 
       {/* ── QR Code: placed inside the white area below the PromptPay logo ── */}
       {/* Template header+logo occupies ~32% of height → QR starts at ~33%   */}
