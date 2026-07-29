@@ -18,21 +18,21 @@ export const translations = {
     system: 'ตามระบบ',
     installPWA: 'ติดตั้งแอป',
     pwaPrompt: 'เพิ่มแอปไปยังหน้าจอหลักเพื่อใช้งานง่ายและออฟไลน์',
-    
+
     // Settings
     settingsTitle: 'ส่วนลด ภาษี และค่าบริการ',
-    serviceCharge: 'ค่าบริการ (Service Charge %)',
-    vat: 'ภาษี (VAT %)',
+    serviceCharge: 'Service Charge (%)',
+    vat: 'VAT (%)',
     discount: 'ส่วนลด (บาท)',
     tip: 'ทิปพนักงาน (บาท)',
     baht: 'บาท',
-    
+
     // Friends
     friendsTitle: 'คนหารบิลนี้',
     addFriend: 'เพิ่มคนหาร',
     friendNamePlaceholder: 'ชื่อคนหาร...',
     noFriends: 'ยังไม่มีคนหาร กดเพิ่มคนหารเพื่อเริ่มแบ่งยอด',
-    
+
     // Items
     itemsTitle: 'รายการอาหาร',
     addItem: 'เพิ่มรายการ',
@@ -47,7 +47,7 @@ export const translations = {
     noItems: 'ยังไม่มีรายการอาหาร กดเพิ่มรายการเพื่อเริ่มคำนวณ',
     matrixView: 'ตาราง (Desktop)',
     cardView: 'การ์ด (Mobile)',
-    
+
     // Validation
     warningTitle: 'มีรายการยังไม่ได้เลือกคนหาร',
     unassignedWarning: 'ยังไม่ได้เลือกคนหารอีก {count} รายการ',
@@ -113,13 +113,13 @@ export const translations = {
     discount: 'Discount (THB)',
     tip: 'Tip (THB)',
     baht: 'THB',
-    
+
     // Friends
     friendsTitle: 'People Sharing Bill',
     addFriend: 'Add Person',
     friendNamePlaceholder: 'Name...',
     noFriends: 'No people added yet. Add someone to start splitting.',
-    
+
     // Items
     itemsTitle: 'Food & Drink Items',
     addItem: 'Add Item',
@@ -134,7 +134,7 @@ export const translations = {
     noItems: 'No items added yet. Click "Add Item" to begin.',
     matrixView: 'Matrix View',
     cardView: 'Card View',
-    
+
     // Validation
     warningTitle: 'Unassigned Items',
     unassignedWarning: '{count} items have no assigned people yet',
