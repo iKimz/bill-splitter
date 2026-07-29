@@ -79,7 +79,7 @@ export const ThaiQrCard: React.FC<ThaiQrCardProps> = ({
             y: undefined,
             height: Math.round(qrSize * 0.18),
             width: Math.round(qrSize * 0.22),
-            excavate: true,
+            excavate: false,
           }}
         />
 

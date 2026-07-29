@@ -46,7 +46,7 @@ export const LineManAffiliateWidget: React.FC<LineManAffiliateWidgetProps> = ({ 
   return (
     <aside
       aria-label="LINE MAN Promotion"
-      className={`fixed bottom-5 right-5 z-40 transition-all duration-500 ease-in-out ${
+      className={`fixed bottom-20 sm:bottom-5 right-4 sm:right-5 z-40 transition-all duration-500 ease-in-out ${
         isMobileDevice ? 'cursor-pointer' : 'cursor-default'
       }`}
       onMouseEnter={() => setIsExpanded(true)}

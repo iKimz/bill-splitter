@@ -109,23 +109,25 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   return (
     /* ── Backdrop ──────────────────────────────── */
     <div
-      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-end sm:items-center justify-center"
+      className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* ── Modal Sheet ──────────────────────────── */}
+      {/* ── Modal Floating Card ─────────────────── */}
       <div
         className="
           bg-white dark:bg-slate-900
-          w-full sm:max-w-md
-          rounded-t-3xl sm:rounded-3xl
+          w-full max-w-md
+          rounded-3xl
           shadow-2xl border border-slate-100 dark:border-slate-800
           flex flex-col
-          max-h-[92dvh] sm:max-h-[88vh]
+          max-h-[90dvh] sm:max-h-[85vh]
+          my-auto
           transition-all
+          overflow-hidden
         "
       >
         {/* ── Header ──────────────────────────────── */}
-        <div className="flex-none p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="flex-none px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
             <Utensils className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             {t.exportModalTitle}
@@ -140,11 +142,11 @@ export const ExportModal: React.FC<ExportModalProps> = ({
         </div>
 
         {/* ── Scrollable Body ─────────────────────── */}
-        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 bg-slate-50 dark:bg-slate-950">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-950">
           {/* Receipt card — exported as PNG */}
           <div
             ref={cardRef}
-            className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-md space-y-3 text-slate-800"
+            className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-md space-y-3.5 text-slate-800"
           >
             {/* Card Header */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -175,25 +177,25 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               {calculation.personSummaries.map((person) => (
                 <div
                   key={person.friendId}
-                  className="flex items-center justify-between px-2.5 py-2 rounded-xl bg-slate-50 text-xs"
+                  className="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50/90 text-xs"
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0 pr-2">
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
                       style={{ backgroundColor: person.avatarColor }}
                     >
                       {person.friendName.charAt(0).toUpperCase()}
                     </div>
-                    <span className="font-bold text-slate-800 flex items-center gap-1">
-                      {person.friendName}
+                    <span className="font-bold text-slate-800 flex items-center gap-1.5 truncate">
+                      <span className="truncate">{person.friendName}</span>
                       {person.isPaid && (
-                        <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-semibold">
+                        <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-semibold shrink-0">
                           โอนแล้ว
                         </span>
                       )}
                     </span>
                   </div>
-                  <span className="font-bold text-emerald-600">
+                  <span className="font-bold text-emerald-600 shrink-0">
                     ฿{person.finalTotal.toLocaleString('th-TH', {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
@@ -242,7 +244,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                           y: undefined,
                           height: 20,
                           width: 24,
-                          excavate: true,
+                          excavate: false,
                         }}
                       />
                       {/* PromptPay ID under QR */}
@@ -266,7 +268,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
         </div>
 
         {/* ── Footer Actions ──────────────────────── */}
-        <div className="flex-none p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2 rounded-b-3xl">
+        <div className="flex-none p-3.5 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex gap-2.5 rounded-b-3xl">
           <button
             onClick={handleCopyText}
             className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition-all active:scale-95 min-w-[100px]"
