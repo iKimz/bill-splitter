@@ -74,7 +74,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
     text += `---------------------------------\n`;
     if (calculation.totalStoreDiscount > 0) {
-      text += `ส่วนลดคูปอง/ร้านค้า (ลดก่อน VAT): -฿${calculation.totalStoreDiscount.toLocaleString('th-TH', {
+      const discountTag = settings.billDiscountType === 'percent' ? ` (${settings.billDiscountAmount}%)` : '';
+      text += `ส่วนลดคูปอง/ร้านค้า (ลดก่อน VAT)${discountTag}: -฿${calculation.totalStoreDiscount.toLocaleString('th-TH', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       })}\n`;

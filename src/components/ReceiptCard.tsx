@@ -136,7 +136,11 @@ export const ReceiptCard: React.FC<ReceiptCardProps> = ({
 
           {calculation.totalStoreDiscount > 0 && (
             <div className="flex justify-between text-amber-600 font-semibold">
-              <span>{language === 'en' ? 'Store/Coupon Discount:' : 'ส่วนลดคูปอง/ร้านค้า (ลดก่อน VAT):'}</span>
+              <span>
+                {language === 'en'
+                  ? `Store/Coupon Discount${settings.billDiscountType === 'percent' ? ` (${settings.billDiscountAmount}%)` : ''}:`
+                  : `ส่วนลดคูปอง/ร้านค้า (ลดก่อน VAT)${settings.billDiscountType === 'percent' ? ` (${settings.billDiscountAmount}%)` : ''}:`}
+              </span>
               <span>
                 -฿
                 {calculation.totalStoreDiscount.toLocaleString('th-TH', {

@@ -15,6 +15,7 @@ export interface BillItem {
 export interface BillSettings {
   serviceChargePercent: number;
   vatPercent: number;
+  billDiscountType?: 'amount' | 'percent'; // 'amount' (บาท) or 'percent' (%)
   billDiscountAmount: number; // ส่วนลดคูปอง/ร้านค้า (คิดก่อน VAT & Service Charge)
   discountAmount: number;     // สปอนเซอร์/คนเลี้ยงช่วยจ่าย (คิดหลัง VAT & Service Charge)
   tipAmount: number;

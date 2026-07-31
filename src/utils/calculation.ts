@@ -14,8 +14,12 @@ export function calculateBill(
   const serviceChargePercent = Math.max(0, settings.serviceChargePercent || 0);
   const vatPercent = Math.max(0, settings.vatPercent || 0);
 
-  // Store / Coupon discount before SC & VAT
-  const totalStoreDiscount = Math.min(itemsSubtotal, Math.max(0, settings.billDiscountAmount || 0));
+  // Store / Coupon discount before SC & VAT (supports Baht Amount or Percent %)
+  const rawStoreDiscount = Math.max(0, settings.billDiscountAmount || 0);
+  const isPercentDiscount = settings.billDiscountType === 'percent';
+  const totalStoreDiscount = isPercentDiscount
+    ? Math.min(itemsSubtotal, itemsSubtotal * (rawStoreDiscount / 100))
+    : Math.min(itemsSubtotal, rawStoreDiscount);
   const netItemsSubtotal = Math.max(0, itemsSubtotal - totalStoreDiscount);
 
   // Sponsor subsidy & Tip (after SC & VAT)
