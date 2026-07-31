@@ -73,6 +73,18 @@ export const ExportModal: React.FC<ExportModalProps> = ({
     });
 
     text += `---------------------------------\n`;
+    if (calculation.totalStoreDiscount > 0) {
+      text += `ส่วนลดคูปอง/ร้านค้า (ลดก่อน VAT): -฿${calculation.totalStoreDiscount.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}\n`;
+    }
+    if (calculation.totalDiscount > 0) {
+      text += `สปอนเซอร์ช่วยจ่าย: -฿${calculation.totalDiscount.toLocaleString('th-TH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}\n`;
+    }
     text += `ยอดรวมทั้งสิ้น: ฿${calculation.grandTotal.toLocaleString('th-TH', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,

@@ -15,7 +15,8 @@ export interface BillItem {
 export interface BillSettings {
   serviceChargePercent: number;
   vatPercent: number;
-  discountAmount: number;
+  billDiscountAmount: number; // ส่วนลดคูปอง/ร้านค้า (คิดก่อน VAT & Service Charge)
+  discountAmount: number;     // สปอนเซอร์/คนเลี้ยงช่วยจ่าย (คิดหลัง VAT & Service Charge)
   tipAmount: number;
   promptPayId: string;
 }
@@ -39,6 +40,8 @@ export interface PersonSummary {
   avatarColor: string;
   items: PersonItemShare[];
   itemSubtotal: number;
+  netItemSubtotal: number;
+  storeDiscountShare: number;
   serviceChargeShare: number;
   vatShare: number;
   discountShare: number;
@@ -50,6 +53,8 @@ export interface PersonSummary {
 export interface CalculationResult {
   personSummaries: PersonSummary[];
   itemsSubtotal: number;
+  totalStoreDiscount: number;
+  netItemsSubtotal: number;
   totalServiceCharge: number;
   totalVat: number;
   totalDiscount: number;

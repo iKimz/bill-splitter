@@ -13,12 +13,21 @@ export function calculateBill(
 
   const serviceChargePercent = Math.max(0, settings.serviceChargePercent || 0);
   const vatPercent = Math.max(0, settings.vatPercent || 0);
+
+  // Store / Coupon discount before SC & VAT
+  const totalStoreDiscount = Math.min(itemsSubtotal, Math.max(0, settings.billDiscountAmount || 0));
+  const netItemsSubtotal = Math.max(0, itemsSubtotal - totalStoreDiscount);
+
+  // Sponsor subsidy & Tip (after SC & VAT)
   const totalDiscount = Math.max(0, settings.discountAmount || 0);
   const totalTip = Math.max(0, settings.tipAmount || 0);
 
-  const totalServiceCharge = itemsSubtotal * (serviceChargePercent / 100);
-  const totalVat = (itemsSubtotal + totalServiceCharge) * (vatPercent / 100);
-  const grandTotal = Math.max(0, itemsSubtotal + totalServiceCharge + totalVat + totalTip - totalDiscount);
+  const totalServiceCharge = netItemsSubtotal * (serviceChargePercent / 100);
+  const totalVat = (netItemsSubtotal + totalServiceCharge) * (vatPercent / 100);
+  const grandTotal = Math.max(
+    0,
+    netItemsSubtotal + totalServiceCharge + totalVat + totalTip - totalDiscount
+  );
 
   const unassignedItemIds: string[] = [];
 
@@ -51,11 +60,17 @@ export function calculateBill(
       });
 
     const ratio = itemsSubtotal > 0 ? personSubtotal / itemsSubtotal : 0;
+    const storeDiscountShare = totalStoreDiscount * ratio;
+    const netItemSubtotal = Math.max(0, personSubtotal - storeDiscountShare);
     const serviceChargeShare = totalServiceCharge * ratio;
     const vatShare = totalVat * ratio;
     const discountShare = totalDiscount * ratio;
     const tipShare = totalTip * ratio;
-    const finalTotal = Math.max(0, personSubtotal + serviceChargeShare + vatShare + tipShare - discountShare);
+
+    const finalTotal = Math.max(
+      0,
+      netItemSubtotal + serviceChargeShare + vatShare + tipShare - discountShare
+    );
 
     return {
       friendId: friend.id,
@@ -63,6 +78,8 @@ export function calculateBill(
       avatarColor: friend.avatarColor,
       items: itemShares,
       itemSubtotal: personSubtotal,
+      netItemSubtotal,
+      storeDiscountShare,
       serviceChargeShare,
       vatShare,
       discountShare,
@@ -75,6 +92,8 @@ export function calculateBill(
   return {
     personSummaries,
     itemsSubtotal,
+    totalStoreDiscount,
+    netItemsSubtotal,
     totalServiceCharge,
     totalVat,
     totalDiscount,

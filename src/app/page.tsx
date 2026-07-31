@@ -37,6 +37,7 @@ const INITIAL_ITEMS: BillItem[] = [
 const INITIAL_SETTINGS: BillSettings = {
   serviceChargePercent: 10,
   vatPercent: 7,
+  billDiscountAmount: 0,
   discountAmount: 0,
   tipAmount: 0,
   promptPayId: '0888888888',

@@ -225,6 +225,19 @@ export const SummarySection: React.FC<SummarySectionProps> = ({
                       </span>
                     </div>
 
+                    {person.storeDiscountShare > 0 && (
+                      <div className="flex justify-between text-amber-600 dark:text-amber-400 font-medium">
+                        <span>{t.storeDiscountShare}:</span>
+                        <span>
+                          -฿
+                          {person.storeDiscountShare.toLocaleString('th-TH', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                    )}
+
                     {person.serviceChargeShare > 0 && (
                       <div className="flex justify-between text-slate-500 dark:text-slate-400">
                         <span>{t.scShare}:</span>
@@ -266,7 +279,7 @@ export const SummarySection: React.FC<SummarySectionProps> = ({
 
                     {person.discountShare > 0 && (
                       <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
-                        <span>{t.discountShare}:</span>
+                        <span>{t.sponsorDiscountShare}:</span>
                         <span>
                           -฿
                           {person.discountShare.toLocaleString('th-TH', {

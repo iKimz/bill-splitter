@@ -116,6 +116,91 @@ export const ReceiptCard: React.FC<ReceiptCardProps> = ({
         ))}
       </div>
 
+      {/* ── Bill Summary Breakdown (if SC, VAT, Store Discount, Sponsor Discount, or Tip active) ──── */}
+      {(calculation.totalStoreDiscount > 0 ||
+        calculation.totalServiceCharge > 0 ||
+        calculation.totalVat > 0 ||
+        calculation.totalDiscount > 0 ||
+        calculation.totalTip > 0) && (
+        <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px] space-y-1">
+          <div className="flex justify-between text-slate-500 font-medium">
+            <span>{language === 'en' ? 'Items Subtotal:' : 'ค่าอาหารรวม:'}</span>
+            <span>
+              ฿
+              {calculation.itemsSubtotal.toLocaleString('th-TH', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </span>
+          </div>
+
+          {calculation.totalStoreDiscount > 0 && (
+            <div className="flex justify-between text-amber-600 font-semibold">
+              <span>{language === 'en' ? 'Store/Coupon Discount:' : 'ส่วนลดคูปอง/ร้านค้า (ลดก่อน VAT):'}</span>
+              <span>
+                -฿
+                {calculation.totalStoreDiscount.toLocaleString('th-TH', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+          )}
+
+          {calculation.totalServiceCharge > 0 && (
+            <div className="flex justify-between text-slate-500 font-medium">
+              <span>Service Charge ({settings.serviceChargePercent}%):</span>
+              <span>
+                +฿
+                {calculation.totalServiceCharge.toLocaleString('th-TH', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+          )}
+
+          {calculation.totalVat > 0 && (
+            <div className="flex justify-between text-slate-500 font-medium">
+              <span>VAT ({settings.vatPercent}%):</span>
+              <span>
+                +฿
+                {calculation.totalVat.toLocaleString('th-TH', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+          )}
+
+          {calculation.totalTip > 0 && (
+            <div className="flex justify-between text-purple-600 font-medium">
+              <span>{language === 'en' ? 'Tip/Extra:' : 'ทิป/อื่นๆ:'}</span>
+              <span>
+                +฿
+                {calculation.totalTip.toLocaleString('th-TH', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+          )}
+
+          {calculation.totalDiscount > 0 && (
+            <div className="flex justify-between text-emerald-600 font-semibold">
+              <span>{language === 'en' ? 'Sponsor Subsidy:' : 'สปอนเซอร์ช่วยจ่าย:'}</span>
+              <span>
+                -฿
+                {calculation.totalDiscount.toLocaleString('th-TH', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ── Thai QR Payment Card Section ───────────────────────────── */}
       {isValidPP && qrPayload && (
         <div className="pt-3 border-t border-slate-100 flex justify-center">
