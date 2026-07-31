@@ -23,12 +23,12 @@ export const translations = {
     settingsTitle: 'ส่วนลด ภาษี และค่าบริการ',
     serviceCharge: 'Service Charge (%)',
     vat: 'VAT (%)',
-    storeDiscount: 'ส่วนลดคูปอง/ร้านค้า (บาท)',
+    storeDiscount: 'ส่วนลดร้านค้า/คูปอง',
     storeDiscountBadge: 'ลดก่อน VAT & SC',
-    sponsorDiscount: 'สปอนเซอร์/คนเลี้ยงช่วยจ่าย (บาท)',
+    sponsorDiscount: 'สปอนเซอร์ช่วยจ่าย',
     sponsorDiscountBadge: 'ส่วนลดสปอนเซอร์',
-    discount: 'ส่วนลดสปอนเซอร์ (บาท)',
-    tip: 'ทิปพนักงาน (บาท)',
+    discount: 'สปอนเซอร์ช่วยจ่าย (บาท)',
+    tip: 'ทิปพนักงาน',
     baht: 'บาท',
 
     // Friends
@@ -120,12 +120,12 @@ export const translations = {
     settingsTitle: 'Tax, Service Charge & Discounts',
     serviceCharge: 'Service Charge (%)',
     vat: 'VAT (%)',
-    storeDiscount: 'Store / Coupon Discount (THB)',
+    storeDiscount: 'Store / Coupon Discount',
     storeDiscountBadge: 'Pre-Tax & SC',
-    sponsorDiscount: 'Sponsor / Subsidy (THB)',
+    sponsorDiscount: 'Sponsor Subsidy',
     sponsorDiscountBadge: 'Sponsor Subsidy',
     discount: 'Sponsor Subsidy (THB)',
-    tip: 'Tip (THB)',
+    tip: 'Tip / Extra',
     baht: 'THB',
 
     // Friends
