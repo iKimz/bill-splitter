@@ -84,8 +84,9 @@ export const SettingsBar: React.FC<SettingsBarProps> = ({
               min="0"
               max="100"
               step="0.5"
-              value={settings.serviceChargePercent !== undefined ? settings.serviceChargePercent : ''}
+              value={settings.serviceChargePercent === 0 ? '' : settings.serviceChargePercent}
               onChange={(e) => handleSCChange(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+              onFocus={(e) => e.target.select()}
               className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all pr-8"
               placeholder="0"
             />
@@ -125,8 +126,9 @@ export const SettingsBar: React.FC<SettingsBarProps> = ({
               min="0"
               max="100"
               step="0.5"
-              value={settings.vatPercent !== undefined ? settings.vatPercent : ''}
+              value={settings.vatPercent === 0 ? '' : settings.vatPercent}
               onChange={(e) => handleVatChange(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+              onFocus={(e) => e.target.select()}
               className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2 text-sm font-semibold text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all pr-8"
               placeholder="0"
             />
@@ -176,8 +178,9 @@ export const SettingsBar: React.FC<SettingsBarProps> = ({
               min="0"
               max={isPercentDiscount ? 100 : undefined}
               step={isPercentDiscount ? 0.5 : 1}
-              value={settings.billDiscountAmount !== undefined ? settings.billDiscountAmount : ''}
+              value={settings.billDiscountAmount === 0 ? '' : settings.billDiscountAmount}
               onChange={(e) => handleBillDiscountChange(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+              onFocus={(e) => e.target.select()}
               className="w-full bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700/80 rounded-lg px-3 py-2 text-sm font-bold text-amber-800 dark:text-amber-300 focus:ring-2 focus:ring-amber-500 outline-none transition-all pr-12"
               placeholder="0"
             />
@@ -203,8 +206,9 @@ export const SettingsBar: React.FC<SettingsBarProps> = ({
               type="number"
               min="0"
               step="1"
-              value={settings.discountAmount !== undefined ? settings.discountAmount : ''}
+              value={settings.discountAmount === 0 ? '' : settings.discountAmount}
               onChange={(e) => handleSponsorDiscountChange(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+              onFocus={(e) => e.target.select()}
               className="w-full bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700/80 rounded-lg px-3 py-2 text-sm font-bold text-emerald-800 dark:text-emerald-300 focus:ring-2 focus:ring-emerald-500 outline-none transition-all pr-12"
               placeholder="0"
             />
@@ -243,8 +247,9 @@ export const SettingsBar: React.FC<SettingsBarProps> = ({
               type="number"
               min="0"
               step="1"
-              value={settings.tipAmount !== undefined ? settings.tipAmount : ''}
+              value={settings.tipAmount === 0 ? '' : settings.tipAmount}
               onChange={(e) => handleTipChange(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+              onFocus={(e) => e.target.select()}
               className="w-full bg-white dark:bg-slate-800 border border-purple-300 dark:border-purple-700 rounded-lg px-3 py-2 text-sm font-bold text-purple-700 dark:text-purple-300 focus:ring-2 focus:ring-purple-500 outline-none transition-all pr-12"
               placeholder="0"
             />
